@@ -1,0 +1,37 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 3%;
+}
+
+.gradient-custom {
+  background: linear-gradient(119.91deg, #FD05AE 3.46%, #F79800 108.77%);
+}
+
+.gradient-green {
+  background: linear-gradient(119.91deg, #70FD05 3.46%, #00F798 108.77%);
+}
+
+.wallet-image {
+  box-shadow: 0px 4px 30px 0px #00000040;
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+/* Smooth horizontal scrolling */
+.horizontal-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
