@@ -1,8 +1,10 @@
 export const WiseCardRecentActivity = () => {
   return (
-    <div className="border-gray-200 border w-full h-auto space-y-10 rounded-[20px] p-[4.5%] pb-[8%] shadow-sm">
-      <h1 className="font-semibold text-lg">Recent activity</h1>
-      <div className="flex justify-between mt-4">
+    <div className="border-[#EEEEEE] recent-activity-box-shadow border w-full h-[534px] flex flex-col gap-[16px] rounded-[20px] p-[16px]">
+      <h1 className="font-semibold text-[16px] mt-2 mb-3 leading-[100%]">
+        Recent activity
+      </h1>
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img
@@ -21,7 +23,7 @@ export const WiseCardRecentActivity = () => {
 
         <p className="font-semibold text-gray-900 text-base">$473.85</p>
       </div>
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img
@@ -41,7 +43,7 @@ export const WiseCardRecentActivity = () => {
         <p className="font-semibold text-gray-900 text-base">$779.58</p>
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img
@@ -61,7 +63,7 @@ export const WiseCardRecentActivity = () => {
         <p className="font-semibold text-green-600 text-base">$601.13</p>
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img
@@ -81,7 +83,7 @@ export const WiseCardRecentActivity = () => {
         <p className="font-semibold text-gray-900 text-base">$105.55</p>
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img
@@ -101,7 +103,7 @@ export const WiseCardRecentActivity = () => {
         <p className="font-semibold text-gray-900 text-base">$490.91</p>
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="flex justify-between py-[10px]">
         <div className="flex items-center space-x-4">
           <div className="aspect-square rounded-full overflow-hidden w-[40px] h-[40px]">
             <img

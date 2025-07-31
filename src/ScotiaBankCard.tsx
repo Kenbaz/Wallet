@@ -13,17 +13,17 @@ export default function ScotiaBankCard({
   return (
     <div className="flex flex-col gap-y-10">
       <motion.div
-        className="w-full rounded-2xl h-auto gradient-custom text-[#FFFFFF] shadow-lg cursor-pointer select-none"
+        className="w-full max-w-[90vw] aspect-auto sm:max-w-[364px] rounded-[18.93px] gradient-custom text-[#FFFFFF] shadow-lg cursor-pointer select-none"
         onClick={onClick}
         whileHover={{ scale: isExpanded ? 1 : 1.02 }}
         whileTap={{ scale: 0.98 }}
         transition={{ duration: 0.2 }}
       >
-        <div className="flex flex-col p-4 sm:p-5 space-y-[5.2vh] sm:space-y-6">
+        <div className="flex flex-col p-4 sm:p-5 space-y-[14%] sm:space-y-6">
           <div className="flex justify-between items-start">
-            <h3 className="text-lg sm:text-xl font-bold">ScotiaBank</h3>
+            <h3 className="text-[22px] sm:text-xl leading-[100%] font-bold">ScotiaBank</h3>
             <div className="text-right">
-              <p className="text-lg sm:text-xl font-bold">
+              <p className="text-[22px] leading-[100%] sm:text-xl font-bold">
                 $5000.<sub className="text-sm">89</sub>
               </p>
               <small className="text-xs opacity-70">Balance</small>
@@ -40,14 +40,14 @@ export default function ScotiaBankCard({
 
           <div className="flex justify-between items-center">
             <button
-              className="flex items-center space-x-2 text-xs sm:text-sm"
+              className="flex items-center space-x-2 text-[11.36px] sm:text-sm"
               onClick={(e) => e.stopPropagation()}
             >
               <PlusCircle size={16} />
               <span>Add Money</span>
             </button>
             <button
-              className="flex items-center space-x-2 text-xs sm:text-sm"
+              className="flex items-center space-x-2 text-[11.36px] sm:text-sm"
               onClick={(e) => e.stopPropagation()}
             >
               <CreditCard size={16} />

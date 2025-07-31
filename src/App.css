@@ -35,3 +35,7 @@
   scroll-behavior: smooth;
   -webkit-overflow-scrolling: touch;
 }
+
+.recent-activity-box-shadow {
+  box-shadow: 0px 4px 20px 0px #0000000D;
+}

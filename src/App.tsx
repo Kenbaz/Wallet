@@ -113,13 +113,13 @@ function App() {
   // Calculate positions and widths based on card order and expanded card in view
   const getCardPositions = () => {
     let scotiaX = 0;
-    let wiseX = 89;
+    let wiseX = 85;
 
     if (isExpanded) {
       if (expandedCardInView === "wise") {
         // Shift both cards left so Wise is in view
-        scotiaX = -81.5;
-        wiseX = 7;
+        scotiaX = -74.5;
+        wiseX = 10.5;
       }
       // If expandedCardInView === "scotia", keep default positions
     }
@@ -128,16 +128,16 @@ function App() {
       scotia: {
         collapsed:
           cardOrder === "scotia-top"
-            ? { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" }
-            : { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" },
-        expanded: { x: `${scotiaX}vw`, y: "-60%", width: "85vw" },
+            ? { x: 8, y: "18%", z: 3, width: "calc(100% - 1rem)" }
+            : { x: 16, y: "-3%", z: 2, width: "calc(100% - 2rem)" },
+        expanded: { x: `${scotiaX}vw`, y: "-46%", width: "82vw" },
       },
       wise: {
         collapsed:
           cardOrder === "scotia-top"
-            ? { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" }
-            : { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" },
-        expanded: { x: `${wiseX}vw`, y: "-60%", width: "85vw" },
+            ? { x: 16, y: "-3%", z: 2, width: "calc(100% - 2rem)" }
+            : { x: 8, y: "18%", z: 3, width: "calc(100% - 1rem)" },
+        expanded: { x: `${wiseX}vw`, y: "-46%", width: "82vw" },
       },
     };
   };
@@ -145,8 +145,8 @@ function App() {
   const positions = getCardPositions();
 
   return (
-    <div className="flex flex-col relative items-center min-h-screen px-0 py-8 overflow-hidden md:hidden">
-      <div className="flex items-center justify-between w-full mb-[20%]">
+    <div className="flex flex-col relative items-center min-h-[100vh] overflow-hidden px-0 py-8 md:hidden">
+      <div className="flex items-center justify-between w-full mb-[10%]">
         <h1 className="font-semibold text-3xl">Wallet</h1>
         <div className="flex items-center space-x-2">
           <span className="bg-[#F5F5F5] rounded-full p-[10px]">
@@ -285,7 +285,7 @@ function App() {
 
         {/* Wallet Background */}
         <motion.div
-          className="absolute top-0 left-0 w-full z-[1]"
+          className="absolute top-0 left-0 w-full aspect-[4/3] z-[1]"
           animate={{
             y: showDetails ? 700 : isExpanded ? 200 : 0,
             scale: showDetails ? 0.6 : isExpanded ? 0.9 : 1,
@@ -298,17 +298,17 @@ function App() {
           }}
         >
           {/* Wallet Background Image */}
-          <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
+          <div className="w-full aspect-[4/3] rounded-[20px] overflow-hidden">
             <img
               src="/images/Rectangle 3.png"
               alt="wallet background"
-              className="w-full h-full object-cover"
+              className="w-full h-full rounded-[20px] object-cover"
             />
           </div>
 
           {!showDetails && (
-            <div className="w-full mt-[40px] px-0">
-              <div className="border rounded-[10px] border-gray-300 flex items-center justify-between w-full p-4 bg-white">
+            <div className="w-full max-w-[90vw] sm:max-w-[399px] mx-auto mt-[40px] px-0">
+              <div className="border recent-activity-box-shadow rounded-[10px] border-[#EEEEEE] flex items-center justify-between w-full p-4 bg-white">
                 <strong>Recent activity</strong>
                 <strong className="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
                   5
@@ -320,7 +320,7 @@ function App() {
 
         {/* Wallet Frame */}
         <motion.div
-          className="absolute top-0 left-0 w-full aspect-[4/3] z-[10] pointer-events-none"
+          className="absolute top-0 left-0 w-full rounded-[20px] aspect-[4/3] z-[10] pointer-events-none"
           animate={{
             y: showDetails ? 700 : isExpanded ? 200 : 0,
             scale: showDetails ? 0.6 : isExpanded ? 0.9 : 1,
@@ -335,14 +335,14 @@ function App() {
           <img
             src="/images/Frame.png"
             alt="wallet frame"
-            className="absolute bottom-0 left-0 w-full h-auto"
+            className="absolute bottom-0 rounded-[20px] left-0 w-full h-auto"
           />
         </motion.div>
       </div>
 
       {/* Detailed Recent Activity Components */}
       {showDetails && (
-        <div className="w-full max-w-sm mt-[30%] relative">
+        <div className="w-full max-w-sm mt-[35%] relative">
           {/* Scotia Activity */}
           <motion.div
             className="absolute inset-0"
