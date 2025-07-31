@@ -40,14 +40,14 @@ export default function ScotiaBankCard({
 
           <div className="flex justify-between items-center">
             <button
-              className="flex items-center space-x-2 text-xs sm:text-sm bg-transparent"
+              className="flex items-center space-x-2 text-xs sm:text-sm gradient-custom"
               onClick={(e) => e.stopPropagation()}
             >
               <PlusCircle size={16} />
               <span>Add Money</span>
             </button>
             <button
-              className="flex items-center space-x-2 text-xs sm:text-sm bg-transparent"
+              className="flex items-center space-x-2 text-xs sm:text-sm gradient-custom"
               onClick={(e) => e.stopPropagation()}
             >
               <CreditCard size={16} />
