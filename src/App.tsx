@@ -1,4 +1,6 @@
-{/* eslint-disable @typescript-eslint/no-explicit-any */}
+{
+  /* eslint-disable @typescript-eslint/no-explicit-any */
+}
 
 import "./App.css";
 import { useState, useEffect } from "react";
@@ -16,21 +18,28 @@ function App() {
     "scotia-top"
   );
   const [isDragging, setIsDragging] = useState<string | null>(null);
+  const [expandedCardInView, setExpandedCardInView] = useState<
+    "scotia" | "wise"
+  >("scotia");
+  const [swipeOffset, setSwipeOffset] = useState(0);
 
   // Auto-show details after cards expand
   useEffect(() => {
     if (isExpanded) {
+      // Set initial card in view based on which card is on top (higher z-index)
+      setExpandedCardInView(cardOrder === "scotia-top" ? "scotia" : "wise");
       const timer = setTimeout(() => {
         setShowDetails(true);
       }, 100); // Wait for expansion animation to complete
       return () => clearTimeout(timer);
     } else {
       setShowDetails(false);
+      setSwipeOffset(0); // Reset swipe offset when collapsing
     }
-  }, [isExpanded]);
+  }, [isExpanded, cardOrder]);
 
   const handleCardClick = () => {
-    if (!isDragging) {
+    if (!isDragging && Math.abs(swipeOffset) < 10) {
       setIsExpanded(!isExpanded);
     }
   };
@@ -42,52 +51,112 @@ function App() {
   const handleDragEnd = (cardId: string, info: any) => {
     setIsDragging(null);
 
-    // Check if dragged upward far enough to trigger reorder (30px threshold)
-    const dragDistance = info.offset.y;
+    // Only handle vertical drag reordering when collapsed
+    if (!isExpanded) {
+      // Check if dragged upward far enough to trigger reorder (30px threshold)
+      const dragDistance = info.offset.y;
 
-    // Only reorder if dragged UPWARD (negative Y) beyond threshold
-    if (dragDistance < -30) {
-      // If dragging the bottom card up, reorder
-      if (
-        (cardId === "wise" && cardOrder === "scotia-top") ||
-        (cardId === "scotia" && cardOrder === "wise-top")
-      ) {
-        setCardOrder(cardOrder === "scotia-top" ? "wise-top" : "scotia-top");
+      // Only reorder if dragged UPWARD (negative Y) beyond threshold
+      if (dragDistance < -30) {
+        // If dragging the bottom card up, reorder
+        if (
+          (cardId === "wise" && cardOrder === "scotia-top") ||
+          (cardId === "scotia" && cardOrder === "wise-top")
+        ) {
+          setCardOrder(cardOrder === "scotia-top" ? "wise-top" : "scotia-top");
+        }
       }
     }
   };
 
-  // Calculate positions and widths based on card order
-  const getCardPositions = () => {
-    if (cardOrder === "scotia-top") {
-      return {
-        scotia: {
-          collapsed: { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" },
-          expanded: { x: 0, y: "-60%", width: "85vw" },
-        },
-        wise: {
-          collapsed: { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" },
-          expanded: { x: "calc(80vw + 2.3rem)", y: "-60%", width: "85vw" },
-        },
-      };
-    } else {
-      return {
-        scotia: {
-          collapsed: { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" },
-          expanded: { x: "calc(80vw + 2.3rem)", y: "-60%", width: "85vw" },
-        },
-        wise: {
-          collapsed: { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" },
-          expanded: { x: 0, y: "-60%", width: "85vw" },
-        },
-      };
+  const handleSwipeDrag = (info: any) => {
+    if (isExpanded) {
+      const dragX = info.offset.x;
+      // Convert drag distance to viewport units for smooth movement
+      // Limit the drag to prevent over-scrolling beyond the cards
+      const maxDrag = window.innerWidth; // Max drag distance
+      const limitedOffset = Math.max(-maxDrag, Math.min(maxDrag, dragX));
+      setSwipeOffset(limitedOffset);
     }
+  };
+
+  const handleSwipeDragEnd = (info: any) => {
+    if (isExpanded) {
+      const dragX = info.offset.x;
+      const velocity = info.velocity.x;
+
+      // Threshold for switching cards (50px drag or sufficient velocity)
+      const shouldSwitch = Math.abs(dragX) > 50 || Math.abs(velocity) > 500;
+
+      if (shouldSwitch) {
+        // Determine swipe direction and switch cards
+        let newCardInView = expandedCardInView;
+
+        if (dragX > 0 && expandedCardInView === "wise") {
+          // Swiping right, show scotia
+          newCardInView = "scotia";
+        } else if (dragX < 0 && expandedCardInView === "scotia") {
+          // Swiping left, show wise
+          newCardInView = "wise";
+        }
+
+        // Only animate if we're actually switching cards
+        if (newCardInView !== expandedCardInView) {
+          // Switch cards and reset offset immediately for smooth animation
+          setExpandedCardInView(newCardInView);
+        }
+      } else if (Math.abs(dragX) < 10 && Math.abs(velocity) < 100) {
+        // This was likely a tap, not a swipe - collapse the cards
+        setIsExpanded(false);
+      }
+
+      // Always reset swipe offset immediately for smooth animation
+      setSwipeOffset(0);
+    }
+  };
+
+  // Calculate positions and widths based on card order and expanded card in view
+  const getCardPositions = () => {
+    // Simple logic: cards are always 90vw apart
+    // When Scotia is in view: Scotia=0, Wise=90vw
+    // When Wise is in view: Scotia=-90vw, Wise=0
+
+    // const cardSpacing = 90; // Distance between cards in vw
+    let scotiaX = 0;
+    let wiseX = 89;
+
+    if (isExpanded) {
+      if (expandedCardInView === "wise") {
+        // Shift both cards left so Wise is in view
+        scotiaX = -81.5;
+        wiseX = 7;
+      }
+      // If expandedCardInView === "scotia", keep default positions
+    }
+
+    // Same positioning logic regardless of card order
+    return {
+      scotia: {
+        collapsed:
+          cardOrder === "scotia-top"
+            ? { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" }
+            : { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" },
+        expanded: { x: `${scotiaX}vw`, y: "-60%", width: "85vw" },
+      },
+      wise: {
+        collapsed:
+          cardOrder === "scotia-top"
+            ? { x: 16, y: "-10%", z: 2, width: "calc(100% - 2rem)" }
+            : { x: 8, y: "15%", z: 3, width: "calc(100% - 1rem)" },
+        expanded: { x: `${wiseX}vw`, y: "-60%", width: "85vw" },
+      },
+    };
   };
 
   const positions = getCardPositions();
 
   return (
-    <div className="flex flex-col relative items-center min-h-screen px-0 py-8 overflow-hidden">
+    <div className="flex flex-col relative items-center min-h-screen px-0 py-8 overflow-hidden md:hidden">
       <div className="flex items-center justify-between w-full mb-[20%]">
         <h1 className="font-semibold text-3xl">Wallet</h1>
         <div className="flex items-center space-x-2">
@@ -105,14 +174,16 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed top-0 left-0 w-full h-full pointer-events-none z-20"
+          className="fixed top-0 left-0 w-full h-full z-5 pointer-events-auto"
+          drag="x"
+          dragConstraints={{ left: 0, right: 0 }}
+          dragElastic={0.1}
+          onDrag={(_, info) => handleSwipeDrag(info)}
+          onDragEnd={(_, info) => handleSwipeDragEnd(info)}
+          style={{ cursor: "grab" }}
+          whileDrag={{ cursor: "grabbing" }}
         >
-          <div className="absolute top-1/2 left-0 w-full transform -translate-y-1/2 pointer-events-auto">
-            <div className="flex space-x-4 px-4 overflow-x-auto scrollbar-hide">
-              <div className="min-w-[80vw] flex-shrink-0 opacity-0"></div>
-              <div className="min-w-[80vw] flex-shrink-0 opacity-0"></div>
-            </div>
-          </div>
+          {/* Invisible swipe area */}
         </motion.div>
       )}
 
@@ -128,7 +199,7 @@ function App() {
           animate={
             isExpanded
               ? {
-                  x: positions.scotia.expanded.x,
+                  x: `calc(${positions.scotia.expanded.x} + ${swipeOffset}px)`,
                   y: positions.scotia.expanded.y,
                   width: positions.scotia.expanded.width,
                 }
@@ -139,10 +210,10 @@ function App() {
                 }
           }
           drag={!isExpanded ? "y" : false}
-          dragConstraints={{ top: -30, bottom: 5 }}
-          dragElastic={0.2}
-          onDragStart={() => handleDragStart("scotia")}
-          onDragEnd={(_, info) => handleDragEnd("scotia", info)}
+          dragConstraints={!isExpanded ? { top: -30, bottom: 5 } : undefined}
+          dragElastic={!isExpanded ? 0.2 : 0}
+          onDragStart={() => !isExpanded && handleDragStart("scotia")}
+          onDragEnd={(_, info) => !isExpanded && handleDragEnd("scotia", info)}
           whileDrag={{
             scale: 1.05,
             rotate: isDragging === "scotia" ? 2 : 0,
@@ -164,7 +235,10 @@ function App() {
                 {/* <div className="w-8 h-1 bg-white/60 rounded-full"></div> */}
               </motion.div>
             )}
-            <ScotiaBankCard onClick={handleCardClick} isExpanded={isExpanded} />
+            <ScotiaBankCard
+              onClick={isExpanded ? () => {} : handleCardClick}
+              isExpanded={isExpanded}
+            />
           </div>
         </motion.div>
 
@@ -179,7 +253,7 @@ function App() {
           animate={
             isExpanded
               ? {
-                  x: positions.wise.expanded.x,
+                  x: `calc(${positions.wise.expanded.x} + ${swipeOffset}px)`,
                   y: positions.wise.expanded.y,
                   width: positions.wise.expanded.width,
                 }
@@ -190,10 +264,10 @@ function App() {
                 }
           }
           drag={!isExpanded ? "y" : false}
-          dragConstraints={{ top: -30, bottom: 5 }}
-          dragElastic={0.2}
-          onDragStart={() => handleDragStart("wise")}
-          onDragEnd={(_, info) => handleDragEnd("wise", info)}
+          dragConstraints={!isExpanded ? { top: -30, bottom: 5 } : undefined}
+          dragElastic={!isExpanded ? 0.2 : 0}
+          onDragStart={() => !isExpanded && handleDragStart("wise")}
+          onDragEnd={(_, info) => !isExpanded && handleDragEnd("wise", info)}
           whileDrag={{
             scale: 1.05,
             rotate: isDragging === "wise" ? -2 : 0,
@@ -215,13 +289,16 @@ function App() {
                 {/* <div className="w-8 h-1 bg-black/60 rounded-full"></div> */}
               </motion.div>
             )}
-            <WiseCard onClick={handleCardClick} isExpanded={isExpanded} />
+            <WiseCard
+              onClick={isExpanded ? () => {} : handleCardClick}
+              isExpanded={isExpanded}
+            />
           </div>
         </motion.div>
 
         {/* Wallet Background */}
         <motion.div
-          className="absolute top-0 left-0 w-full aspect-[4/3] rounded-xl overflow-hidden z-[1]"
+          className="absolute top-0 left-0 w-full z-[1]"
           animate={{
             y: showDetails ? 700 : isExpanded ? 200 : 0,
             scale: showDetails ? 0.6 : isExpanded ? 0.9 : 1,
@@ -233,11 +310,26 @@ function App() {
             delay: isExpanded ? 0 : 0.1,
           }}
         >
-          <img
-            src="/images/Rectangle 3.png"
-            alt="wallet background"
-            className="w-full h-full object-cover"
-          />
+          {/* Wallet Background Image */}
+          <div className="w-full aspect-[4/3] rounded-xl overflow-hidden">
+            <img
+              src="/images/Rectangle 3.png"
+              alt="wallet background"
+              className="w-full h-full object-cover"
+            />
+          </div>
+
+          {/* Recent Activity Section - positioned below wallet */}
+          {!showDetails && (
+            <div className="w-full mt-[40px] px-0">
+              <div className="border rounded-[10px] border-gray-300 flex items-center justify-between w-full p-4 bg-white">
+                <strong>Recent activity</strong>
+                <strong className="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
+                  5
+                </strong>
+              </div>
+            </div>
+          )}
         </motion.div>
 
         {/* Wallet Frame - separate element with higher z-index */}
@@ -263,7 +355,7 @@ function App() {
       </div>
 
       {/* Recent Activity Section - Summary (only show when not in details) */}
-      {!showDetails && (
+      {/* {!showDetails && (
         <motion.div
           className="w-full max-w-sm"
           animate={{
@@ -283,27 +375,45 @@ function App() {
             </strong>
           </div>
         </motion.div>
-      )}
+      )} */}
 
       {/* Detailed Recent Activity Components */}
       {showDetails && (
-        <motion.div
-          className="w-full max-w-sm mt-[50%]"
-          initial={{ y: 300, opacity: 0 }}
-          animate={{ y: '-15%', opacity: 1 }}
-          exit={{ y: 300, opacity: 0 }}
-          transition={{
-            duration: 0.2,
-            ease: [0.16, 1, 0.3, 1],
-            delay: 0.2,
-          }}
-        >
-          {cardOrder === "scotia-top" ? (
+        <div className="w-full max-w-sm mt-[30%] relative">
+          {/* Scotia Activity */}
+          <motion.div
+            className="absolute inset-0"
+            initial={{ y: 300, opacity: 0 }}
+            animate={{
+              y: "-15%",
+              opacity: expandedCardInView === "scotia" ? 1 : 0,
+              pointerEvents: expandedCardInView === "scotia" ? "auto" : "none",
+            }}
+            transition={{
+              y: { duration: 0.2, ease: [0.16, 1, 0.3, 1], delay: 0 },
+              opacity: { duration: 0.3, ease: "easeInOut" },
+            }}
+          >
             <ScotiaBankRecentActivity />
-          ) : (
+          </motion.div>
+
+          {/* Wise Activity */}
+          <motion.div
+            className="absolute inset-0"
+            initial={{ y: 300, opacity: 0 }}
+            animate={{
+              y: "-15%",
+              opacity: expandedCardInView === "wise" ? 1 : 0,
+              pointerEvents: expandedCardInView === "wise" ? "auto" : "none",
+            }}
+            transition={{
+              y: { duration: 0.2, ease: [0.16, 1, 0.3, 1], delay: 0.2 },
+              opacity: { duration: 0.3, ease: "easeInOut" },
+            }}
+          >
             <WiseCardRecentActivity />
-          )}
-        </motion.div>
+          </motion.div>
+        </div>
       )}
     </div>
   );
