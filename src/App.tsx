@@ -23,7 +23,7 @@ function App() {
   >("scotia");
   const [swipeOffset, setSwipeOffset] = useState(0);
 
-  // Auto-show details after cards expand
+
   useEffect(() => {
     if (isExpanded) {
       // Set initial card in view based on which card is on top (higher z-index)
@@ -34,7 +34,7 @@ function App() {
       return () => clearTimeout(timer);
     } else {
       setShowDetails(false);
-      setSwipeOffset(0); // Reset swipe offset when collapsing
+      setSwipeOffset(0);
     }
   }, [isExpanded, cardOrder]);
 
@@ -53,12 +53,10 @@ function App() {
 
     // Only handle vertical drag reordering when collapsed
     if (!isExpanded) {
-      // Check if dragged upward far enough to trigger reorder (30px threshold)
       const dragDistance = info.offset.y;
 
-      // Only reorder if dragged UPWARD (negative Y) beyond threshold
+      // Only reorder if dragged UPWARD beyond threshold
       if (dragDistance < -30) {
-        // If dragging the bottom card up, reorder
         if (
           (cardId === "wise" && cardOrder === "scotia-top") ||
           (cardId === "scotia" && cardOrder === "wise-top")
@@ -73,8 +71,7 @@ function App() {
     if (isExpanded) {
       const dragX = info.offset.x;
       // Convert drag distance to viewport units for smooth movement
-      // Limit the drag to prevent over-scrolling beyond the cards
-      const maxDrag = window.innerWidth; // Max drag distance
+      const maxDrag = window.innerWidth;
       const limitedOffset = Math.max(-maxDrag, Math.min(maxDrag, dragX));
       setSwipeOffset(limitedOffset);
     }
@@ -85,7 +82,7 @@ function App() {
       const dragX = info.offset.x;
       const velocity = info.velocity.x;
 
-      // Threshold for switching cards (50px drag or sufficient velocity)
+      // Threshold for switching cards
       const shouldSwitch = Math.abs(dragX) > 50 || Math.abs(velocity) > 500;
 
       if (shouldSwitch) {
@@ -100,28 +97,21 @@ function App() {
           newCardInView = "wise";
         }
 
-        // Only animate if we're actually switching cards
+        // Only animate if cards are being switched
         if (newCardInView !== expandedCardInView) {
-          // Switch cards and reset offset immediately for smooth animation
           setExpandedCardInView(newCardInView);
         }
       } else if (Math.abs(dragX) < 10 && Math.abs(velocity) < 100) {
-        // This was likely a tap, not a swipe - collapse the cards
         setIsExpanded(false);
       }
 
-      // Always reset swipe offset immediately for smooth animation
+      // reset swipe offset immediately for smooth animation
       setSwipeOffset(0);
     }
   };
 
   // Calculate positions and widths based on card order and expanded card in view
   const getCardPositions = () => {
-    // Simple logic: cards are always 90vw apart
-    // When Scotia is in view: Scotia=0, Wise=90vw
-    // When Wise is in view: Scotia=-90vw, Wise=0
-
-    // const cardSpacing = 90; // Distance between cards in vw
     let scotiaX = 0;
     let wiseX = 89;
 
@@ -134,7 +124,6 @@ function App() {
       // If expandedCardInView === "scotia", keep default positions
     }
 
-    // Same positioning logic regardless of card order
     return {
       scotia: {
         collapsed:
@@ -225,7 +214,6 @@ function App() {
           }}
         >
           <div className="relative bg-transparent">
-            {/* Drag indicator for ScotiaBank card */}
             {!isExpanded && isDragging === "scotia" && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -279,7 +267,6 @@ function App() {
           }}
         >
           <div className="relative bg-transparent">
-            {/* Drag indicator for Wise card */}
             {!isExpanded && isDragging === "wise" && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -319,7 +306,6 @@ function App() {
             />
           </div>
 
-          {/* Recent Activity Section - positioned below wallet */}
           {!showDetails && (
             <div className="w-full mt-[40px] px-0">
               <div className="border rounded-[10px] border-gray-300 flex items-center justify-between w-full p-4 bg-white">
@@ -332,7 +318,7 @@ function App() {
           )}
         </motion.div>
 
-        {/* Wallet Frame - separate element with higher z-index */}
+        {/* Wallet Frame */}
         <motion.div
           className="absolute top-0 left-0 w-full aspect-[4/3] z-[10] pointer-events-none"
           animate={{
@@ -353,29 +339,6 @@ function App() {
           />
         </motion.div>
       </div>
-
-      {/* Recent Activity Section - Summary (only show when not in details) */}
-      {/* {!showDetails && (
-        <motion.div
-          className="w-full max-w-sm"
-          animate={{
-            y: isExpanded ? 200 : 0,
-            opacity: showDetails ? 0 : 1,
-          }}
-          transition={{
-            duration: 0.8,
-            ease: [0.16, 1, 0.3, 1],
-            delay: isExpanded ? 0 : 0.1,
-          }}
-        >
-          <div className="mt-[90%] border rounded-[10px] border-gray-300 flex items-center justify-between w-full p-4">
-            <strong>Recent activity</strong>
-            <strong className="p-2 w-8 h-8 flex items-center justify-center bg-gray-100 rounded-full">
-              5
-            </strong>
-          </div>
-        </motion.div>
-      )} */}
 
       {/* Detailed Recent Activity Components */}
       {showDetails && (
