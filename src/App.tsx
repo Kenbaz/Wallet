@@ -163,7 +163,7 @@ function App() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          className="fixed top-0 left-0 w-full h-full z-5 pointer-events-auto"
+          className="fixed top-[16.5vh] left-0 w-full h-[21vh] z-5 pointer-events-auto"
           drag="x"
           dragConstraints={{ left: 0, right: 0 }}
           dragElastic={0.1}
@@ -176,7 +176,7 @@ function App() {
         </motion.div>
       )}
 
-      <div className="relative w-full max-w-sm mt-16 sm:mt-20">
+      <div className="relative w-full max-w-sm mt-[22%] sm:mt-[22%]">
         {/* ScotiaBank Card */}
         <motion.div
           className="absolute bg-transparent"
