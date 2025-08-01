@@ -112,14 +112,14 @@ function App() {
 
   // Calculate positions and widths based on card order and expanded card in view
   const getCardPositions = () => {
-    let scotiaX = 0;
-    let wiseX = 85;
+    let scotiaX = 1;
+    let wiseX = 86;
 
     if (isExpanded) {
       if (expandedCardInView === "wise") {
         // Shift both cards left so Wise is in view
-        scotiaX = -74.5;
-        wiseX = 10.5;
+        scotiaX = -75.5;
+        wiseX = 10;
       }
       // If expandedCardInView === "scotia", keep default positions
     }
@@ -145,7 +145,7 @@ function App() {
   const positions = getCardPositions();
 
   return (
-    <div className="flex flex-col relative items-center min-h-[100vh] overflow-hidden px-0 py-8 md:hidden">
+    <div className="flex flex-col relative items-center min-h-[100vh] overflow-hidden px-0 py-8 pb-[80vh] md:hidden">
       <div className="flex items-center justify-between w-full mb-[10%]">
         <h1 className="font-semibold text-3xl">Wallet</h1>
         <div className="flex items-center space-x-2">

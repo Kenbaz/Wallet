@@ -7,11 +7,10 @@
     sans-serif;
   line-height: 1.5;
   font-weight: 400;
-  border: 1px solid;
 
   color-scheme: light dark;
   color: #242424;
-  background-color: #FFFFFF;
+  background-color: #ffffff;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -20,13 +19,5 @@
 }
 
 body {
-  margin: 0;
-  min-height: 100vh;
-}
-
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
+  background-color: #ffffff;
 }
