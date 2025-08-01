@@ -145,7 +145,7 @@ function App() {
   const positions = getCardPositions();
 
   return (
-    <div className="flex flex-col relative items-center min-h-[100vh] overflow-hidden px-0 py-8 pb-[70vh] md:hidden">
+    <div className="flex flex-col relative items-center min-h-[100vh] overflow-hidden px-0 py-8 pb-[68vh] md:hidden">
       <div className="flex items-center justify-between w-full mb-[10%]">
         <h1 className="font-semibold text-3xl">Wallet</h1>
         <div className="flex items-center space-x-2">
