@@ -23,7 +23,6 @@ function App() {
   >("scotia");
   const [swipeOffset, setSwipeOffset] = useState(0);
 
-
   useEffect(() => {
     if (isExpanded) {
       // Set initial card in view based on which card is on top (higher z-index)
@@ -54,6 +53,11 @@ function App() {
     // Only handle vertical drag reordering when collapsed
     if (!isExpanded) {
       const dragDistance = info.offset.y;
+
+      // If dragged downward, do nothing and let it snap back
+      if (dragDistance > 0) {
+        return;
+      }
 
       // Only reorder if dragged UPWARD beyond threshold
       if (dragDistance < -30) {
@@ -128,15 +132,39 @@ function App() {
       scotia: {
         collapsed:
           cardOrder === "scotia-top"
-            ? { x: 8, y: "18%", z: 3, width: "calc(100% - 1rem)" }
-            : { x: 16, y: "-3%", z: 2, width: "calc(100% - 2rem)" },
+            ? {
+                x: 8,
+                y: "18%",
+                z: 3,
+                width: "calc(100% - 1rem)",
+                dragConstraints: { top: -0, bottom: -70 },
+              }
+            : {
+                x: 16,
+                y: "-3%",
+                z: 2,
+                width: "calc(100% - 2rem)",
+                dragConstraints: { top: -0, bottom: -70 },
+              },
         expanded: { x: `${scotiaX}vw`, y: "-46%", width: "82vw" },
       },
       wise: {
         collapsed:
           cardOrder === "scotia-top"
-            ? { x: 16, y: "-3%", z: 2, width: "calc(100% - 2rem)" }
-            : { x: 8, y: "18%", z: 3, width: "calc(100% - 1rem)" },
+            ? {
+                x: 16,
+                y: "-3%",
+                z: 2,
+                width: "calc(100% - 2rem)",
+                dragConstraints: { top: -0, bottom: -70 },
+              }
+            : {
+                x: 8,
+                y: "18%",
+                z: 3,
+                width: "calc(100% - 1rem)",
+                dragConstraints: { top: -0, bottom: -70 },
+              },
         expanded: { x: `${wiseX}vw`, y: "-46%", width: "82vw" },
       },
     };
@@ -199,7 +227,9 @@ function App() {
                 }
           }
           drag={!isExpanded ? "y" : false}
-          dragConstraints={!isExpanded ? { top: -30, bottom: 5 } : undefined}
+          dragConstraints={
+            !isExpanded ? positions.scotia.collapsed.dragConstraints : undefined
+          }
           dragElastic={!isExpanded ? 0.2 : 0}
           onDragStart={() => !isExpanded && handleDragStart("scotia")}
           onDragEnd={(_, info) => !isExpanded && handleDragEnd("scotia", info)}
@@ -252,7 +282,9 @@ function App() {
                 }
           }
           drag={!isExpanded ? "y" : false}
-          dragConstraints={!isExpanded ? { top: -30, bottom: 5 } : undefined}
+          dragConstraints={
+            !isExpanded ? positions.wise.collapsed.dragConstraints : undefined
+          }
           dragElastic={!isExpanded ? 0.2 : 0}
           onDragStart={() => !isExpanded && handleDragStart("wise")}
           onDragEnd={(_, info) => !isExpanded && handleDragEnd("wise", info)}
