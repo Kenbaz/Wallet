@@ -123,7 +123,7 @@ function App() {
       if (expandedCardInView === "wise") {
         // Shift both cards left so Wise is in view
         scotiaX = -75.5;
-        wiseX = 10;
+        wiseX = 9;
       }
       // If expandedCardInView === "scotia", keep default positions
     }
